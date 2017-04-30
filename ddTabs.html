@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>ddTabs</title>
+		<style type="text/css">
+			[data-tab-link].current {
+				color: red;
+			}
+			[data-tab-name] {
+				display: none;
+			}
+			[data-tab-name].current {
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div data-tabs-group="tabs-group">
+			<div>
+				<a class="current" href="#" data-tab-link="tab1">tab1</a>
+				<a href="#" data-tab-link="tab2">tab2</a>
+				<a href="#" data-tab-link="tab3">tab3</a>
+			</div>
+		</div>
+		<div data-tabs-group="tabs-group">
+			<div class="current" data-tab-name="tab1">tab1</div>
+			<div data-tab-name="tab2">tab2</div>
+			<div data-tab-name="tab3">tab3</div>
+		</div>
+
+		<script>
+			function ddTabs(customOptions) {
+
+				// 'closest()' polyfill for sad browsers
+				if (window.Element && !Element.prototype.closest) {
+					Element.prototype.closest = 
+					function(s) {
+						let matches = (this.document || this.ownerDocument).querySelectorAll(s),
+							i,
+							el = this;
+						do {
+							i = matches.length;
+							while (--i >= 0 && matches.item(i) !== el) {}
+						} while ((i < 0) && (el = el.parentElement)); 
+						return el;
+					};
+				}
+
+				let options = Object.assign({
+					activeClass: 'current',
+					callback: null
+				}, customOptions);
+
+				[...document.querySelectorAll('[data-tab-link]')].forEach(clickedLink => {
+					clickedLink.onclick = e => {
+						e.preventDefault();
+						if(!clickedLink.classList.contains(options.activeClass)) {
+							let target = clickedLink.getAttribute('data-tab-link');
+							let groupName = clickedLink.closest('[data-tabs-group]').getAttribute('data-tabs-group');
+							[...document.querySelectorAll(`[data-tabs-group=${groupName}] [data-tab-link]`)].forEach(link => {
+								if(link === clickedLink) {
+									link.classList.add(options.activeClass);
+								} else {
+									link.classList.remove(options.activeClass);
+								}
+							});
+							[...document.querySelectorAll(`[data-tabs-group=${groupName}] [data-tab-name]`)].forEach(tab => {
+								if(tab.getAttribute('data-tab-name') === target) {
+									tab.classList.add(options.activeClass);
+								} else {
+									tab.classList.remove(options.activeClass);
+								}
+							});
+							if(options.callback !== null) options.callback();
+						}
+					};
+				});
+			}
+
+			ddTabs();
+		</script>
+	</body>
+</html>
