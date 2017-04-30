@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>ddSameheight</title>
+		<style type="text/css">
+			[data-same-height] {
+				display: inline-block;
+				background: #ccc;
+				width: 100px;
+				vertical-align: top;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div data-same-height="group">
+			<div>item</div>
+			<div>item</div>
+			<div>item</div>
+		</div>
+		<div data-same-height="group">item</div>
+		<div data-same-height="group">item</div>
+
+		<script>
+			function setSameHeights() {
+				let items = [... document.querySelectorAll('[data-same-height]')];
+				let allGroupNames = items.map(item => item.getAttribute('data-same-height'));
+				let uniqueGroupNames = [... new Set(allGroupNames)];
+				uniqueGroupNames.forEach(function(item) {
+					let groupItems = [... document.querySelectorAll(`[data-same-height="${item}"]`)];
+					groupItems.forEach(item => item.style.height = 'auto');
+					let groupHeights = groupItems.map(item => item.offsetHeight);
+					let groupMaxHeight = Math.max(...groupHeights);
+					groupItems.forEach(item => item.style.height = groupMaxHeight + 'px');
+				});
+			}
+
+			window.onresize = () => {
+				setTimeout(() => {
+					setSameHeights();
+				}, 500);
+			};
+
+			setSameHeights();
+		</script>
+	</body>
+</html>
+
+
