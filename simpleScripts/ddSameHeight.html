@@ -28,8 +28,10 @@
 				let uniqueGroupNames = [... new Set(allGroupNames)];
 				uniqueGroupNames.forEach(function(item) {
 					let groupItems = [... document.querySelectorAll(`[data-same-height="${item}"]`)];
-					groupItems.forEach(item => item.style.height = 'auto');
-					let groupHeights = groupItems.map(item => item.offsetHeight);
+					let groupHeights = groupItems.map(item => {
+						item.style.height = 'auto';
+						return item.offsetHeight;
+					});
 					let groupMaxHeight = Math.max(...groupHeights);
 					groupItems.forEach(item => item.style.height = groupMaxHeight + 'px');
 				});
