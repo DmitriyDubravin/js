@@ -23,16 +23,26 @@
 
 		<script>
 			function setSameHeights() {
+				// find all items
 				let items = [... document.querySelectorAll('[data-same-height]')];
+				// find all group names
 				let allGroupNames = items.map(item => item.getAttribute('data-same-height'));
+				// find unique group names
 				let uniqueGroupNames = [... new Set(allGroupNames)];
+				// for each group name
 				uniqueGroupNames.forEach(function(item) {
+					// find all group items
 					let groupItems = [... document.querySelectorAll(`[data-same-height="${item}"]`)];
+					// find all group items heights
 					let groupHeights = groupItems.map(item => {
+						// reset group item height
 						item.style.height = 'auto';
+						// find group item height
 						return item.offsetHeight;
 					});
+					// find group items max height
 					let groupMaxHeight = Math.max(...groupHeights);
+					// set max height to all group items
 					groupItems.forEach(item => item.style.height = groupMaxHeight + 'px');
 				});
 			}
