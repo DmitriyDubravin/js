@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>ddPopups</title>
+		<style type="text/css">
+			[data-popup] {
+				display: none;
+			}
+			[data-popup].active {
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+
+		<a href="#" data-popup-opener="popup1">link1</a>
+		<div data-popup="popup1">1Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem mollitia hic quod eligendi, ut nesciunt voluptatibus, consectetur suscipit voluptas, animi, quibusdam placeat laboriosam ipsa eveniet commodi! Iure iusto soluta aperiam.</div>
+		<a href="#" data-popup-opener="popup2">link2</a>
+		<div data-popup="popup2">2Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem mollitia hic quod eligendi, ut nesciunt voluptatibus, consectetur suscipit voluptas, animi, quibusdam placeat laboriosam ipsa eveniet commodi! Iure iusto soluta aperiam.</div>
+		<a href="#" data-popup-opener="popup3">link3</a>
+		<div data-popup="popup3">3Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem mollitia hic quod eligendi, ut nesciunt voluptatibus, consectetur suscipit voluptas, animi, quibusdam placeat laboriosam ipsa eveniet commodi! Iure iusto soluta aperiam.</div>
+
+		<script>
+			function ddPopups(customOptions) {
+
+				// 'closest()' polyfill for sad browsers
+				if (window.Element && !Element.prototype.closest) {
+					Element.prototype.closest = 
+					function(s) {
+						let matches = (this.document || this.ownerDocument).querySelectorAll(s),
+							i,
+							el = this;
+						do {
+							i = matches.length;
+							while (--i >= 0 && matches.item(i) !== el) {}
+						} while ((i < 0) && (el = el.parentElement)); 
+						return el;
+					};
+				}
+
+				let options = Object.assign({
+					activeClass: 'active',
+					callback: null
+				}, customOptions);
+
+				[...document.querySelectorAll('[data-popup-opener]')].forEach(popupOpener => {
+					popupOpener.onclick = e => {
+						e.preventDefault();
+						e.stopPropagation();
+						let targetName = popupOpener.getAttribute('data-popup-opener');
+						let targetPopup = document.querySelector(`[data-popup=${targetName}]`);
+						if(!popupOpener.classList.contains(options.activeClass)) {
+							window.addEventListener('clickOne', function(el) {
+								if(targetPopup !== el.target.closest(`[data-popup=${targetName}]`)) {
+									console.log('outside');
+									popupOpener.classList.remove(options.activeClass);
+									targetPopup.classList.remove(options.activeClass);
+									// window.removeEventListener('click',function(e){});
+								} else {
+									console.log('inside');
+								}
+							});
+						} else {
+						}
+						popupOpener.classList.toggle(options.activeClass);
+						targetPopup.classList.toggle(options.activeClass);
+					};
+				});
+
+			}
+
+			ddPopups();
+		</script>
+	</body>
+</html>
