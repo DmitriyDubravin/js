@@ -10,14 +10,18 @@ export function lockPage(buttonSelector) {
         e.preventDefault();
 
         if (!isLocked) {
+
             body.classList.add("is-locked");
             offset = win.pageYOffset;
             console.log(offset);
             setStyles(offset);
+
         } else {
+
             body.classList.remove("is-locked");
             unsetStyles();
             win.scrollTo(0, offset);
+
         }
 
         isLocked = !isLocked;
@@ -34,6 +38,7 @@ export function lockPage(buttonSelector) {
             overflow: "hidden"
         });
     }
+
     function unsetStyles() {
         Object.assign(body.style, {
             position: "",
@@ -44,4 +49,5 @@ export function lockPage(buttonSelector) {
             overflow: ""
         });
     }
+
 }
